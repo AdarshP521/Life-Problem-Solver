@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Life Problem Solver</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="header">
@@ -34,26 +34,164 @@
         <!-- Result -->
         <div id="result" class="glass-card hidden">
             <div class="result-text">Then Why Worry!</div>
+            <button class="wisdom-btn" onclick="showWisdom()">Get Wisdom</button>
             <button class="reset-btn" onclick="resetAll()">Reset</button>
+        </div>
+
+        <!-- Wisdom Section -->
+        <div id="wisdom" class="glass-card wisdom-card hidden">
+            <div class="wisdom-header">
+                <h3>Sacred Wisdom</h3>
+                <p>पवित्र ज्ञान</p>
+            </div>
+            <div class="quote-container">
+                <div class="quote-text" id="quoteText"></div>
+                <div class="quote-source" id="quoteSource"></div>
+            </div>
+            <div class="wisdom-buttons">
+                <button class="next-quote-btn" onclick="nextQuote()">Next Quote</button>
+                <button class="back-btn" onclick="backToResult()">Back</button>
+            </div>
         </div>
     </div>
 
     <script>
+        let currentQuoteIndex = 0;
+        
+        const holyQuotes = [
+            {
+                text: "You have the right to perform your prescribed duty, but not to the fruits of actions. Never consider yourself the cause of the results of your activities.",
+                hindi: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन। मा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि।",
+                source: "Bhagavad Gita 2.47",
+                sourceHindi: "भगवद्गीता 2.47"
+            },
+            {
+                text: "The mind is everything. What you think you become.",
+                hindi: "सब कुछ मन है। आप जो सोचते हैं, वही बन जाते हैं।",
+                source: "Buddha - Dhammapada",
+                sourceHindi: "बुद्ध - धम्मपद"
+            },
+            {
+                text: "Do not worry about tomorrow, for tomorrow will worry about itself. Each day has enough trouble of its own.",
+                hindi: "कल की चिंता न करो, क्योंकि कल अपनी चिंता आप कर लेगा। आज का दिन अपनी परेशानी के लिए काफी है।",
+                source: "Bible - Matthew 6:34",
+                sourceHindi: "बाइबल - मैथ्यू 6:34"
+            },
+            {
+                text: "And whoever relies upon Allah - then He is sufficient for him. Indeed, Allah will accomplish His purpose.",
+                hindi: "और जो अल्लाह पर भरोसा करता है, तो वह उसके लिए काफी है। निश्चय ही अल्लाह अपना काम पूरा करेगा।",
+                source: "Quran 65:3",
+                sourceHindi: "कुरान 65:3"
+            },
+            {
+                text: "Change is the law of the universe. You can be a millionaire or a pauper in an instant.",
+                hindi: "परिवर्तन ब्रह्मांड का नियम है। आप क्षण भर में करोड़पति या गरीब हो सकते हैं।",
+                source: "Bhagavad Gita",
+                sourceHindi: "भगवद्गीता"
+            },
+            {
+                text: "Peace comes from within. Do not seek it without.",
+                hindi: "शांति अंदर से आती है। इसे बाहर न खोजें।",
+                source: "Buddha",
+                sourceHindi: "बुद्ध"
+            },
+            {
+                text: "Be still and know that I am God.",
+                hindi: "शांत रहो और जानो कि मैं परमेश्वर हूँ।",
+                source: "Bible - Psalm 46:10",
+                sourceHindi: "बाइबल - भजन 46:10"
+            },
+            {
+                text: "And it is He who created the heavens and earth in truth. And the day He says, 'Be,' and it is, His word is the truth.",
+                hindi: "और वही है जिसने आकाश और पृथ्वी को सच्चाई से बनाया। और जिस दिन वह कहता है 'हो जा', तो वह हो जाता है।",
+                source: "Quran 6:73",
+                sourceHindi: "कुरान 6:73"
+            },
+            {
+                text: "The soul is neither born, nor does it die. It is not slain when the body is slain.",
+                hindi: "आत्मा न तो जन्म लेती है, न मरती है। शरीर के मारे जाने पर यह नहीं मरती।",
+                source: "Bhagavad Gita 2.20",
+                sourceHindi: "भगवद्गीता 2.20"
+            },
+            {
+                text: "Three things cannot be long hidden: the sun, the moon, and the truth.",
+                hindi: "तीन चीजें लंबे समय तक छुपी नहीं रह सकतीं: सूर्य, चांद और सत्य।",
+                source: "Buddha",
+                sourceHindi: "बुद्ध"
+            },
+            {
+                text: "Trust in the Lord with all your heart and lean not on your own understanding.",
+                hindi: "अपने पूरे हृदय से प्रभु पर भरोसा करो और अपनी समझ पर भरोसा न करो।",
+                source: "Bible - Proverbs 3:5",
+                sourceHindi: "बाइबल - नीतिवचन 3:5"
+            },
+            {
+                text: "And Allah is the best of planners.",
+                hindi: "और अल्लाह सबसे अच्छा योजनाकार है।",
+                source: "Quran 8:30",
+                sourceHindi: "कुरान 8:30"
+            },
+            {
+                text: "A person can rise through the efforts of his own mind; or draw himself down, in the same manner.",
+                hindi: "व्यक्ति अपने मन के प्रयासों से ऊपर उठ सकता है; या उसी तरह खुद को नीचे गिरा सकता है।",
+                source: "Bhagavad Gita 6.5",
+                sourceHindi: "भगवद्गीता 6.5"
+            },
+            {
+                text: "Hatred does not cease by hatred, but only by love; this is the eternal rule.",
+                hindi: "घृणा से घृणा शांत नहीं होती, केवल प्रेम से होती है; यह शाश्वत नियम है।",
+                source: "Buddha - Dhammapada",
+                sourceHindi: "बुद्ध - धम्मपद"
+            },
+            {
+                text: "Cast all your anxiety on him because he cares for you.",
+                hindi: "अपनी सारी चिंताएं उस पर डाल दो क्योंकि वह तुम्हारी परवाह करता है।",
+                source: "Bible - 1 Peter 5:7",
+                sourceHindi: "बाइबल - 1 पतरस 5:7"
+            },
+            {
+                text: "And whoever fears Allah - He will make for him a way out.",
+                hindi: "और जो अल्लाह से डरता है, वह उसके लिए एक रास्ता बना देगा।",
+                source: "Quran 65:2",
+                sourceHindi: "कुरान 65:2"
+            },
+            {
+                text: "The best way to take care of the future is to take care of the present moment.",
+                hindi: "भविष्य की देखभाल करने का सबसे अच्छा तरीका वर्तमान क्षण की देखभाल करना है।",
+                source: "Bhagavad Gita",
+                sourceHindi: "भगवद्गीता"
+            },
+            {
+                text: "Better than a thousand hollow words is one word that brings peace.",
+                hindi: "हजार खोखले शब्दों से बेहतर एक शब्द है जो शांति लाता है।",
+                source: "Buddha - Dhammapada",
+                sourceHindi: "बुद्ध - धम्मपद"
+            },
+            {
+                text: "The Lord your God is in your midst, a mighty one who will save.",
+                hindi: "तुम्हारा परमेश्वर तुम्हारे बीच में है, एक शक्तिशाली जो बचाएगा।",
+                source: "Bible - Zephaniah 3:17",
+                sourceHindi: "बाइबल - सपन्याह 3:17"
+            },
+            {
+                text: "And it is Allah who sends down rain from the sky, and We produce thereby the vegetation of every kind.",
+                hindi: "और अल्लाह ही है जो आसमान से बारिश भेजता है, और हम उससे हर प्रकार की वनस्पति उगाते हैं।",
+                source: "Quran 6:99",
+                sourceHindi: "कुरान 6:99"
+            }
+        ];
+
         function showNext(choice, questionNum) {
-            // Hide current element
             const current = document.getElementById('question' + questionNum);
             current.classList.add('hidden');
             
             if (questionNum === 1) {
                 if (choice === 'no') {
-                    // Show result
                     showElement('result');
                 } else {
-                    // Show question 2
                     showElement('question2');
                 }
             } else {
-                // Both yes and no from question 2 show result
                 showElement('result');
             }
         }
@@ -66,12 +204,37 @@
             }, 200);
         }
 
+        function showWisdom() {
+            document.getElementById('result').classList.add('hidden');
+            currentQuoteIndex = Math.floor(Math.random() * holyQuotes.length);
+            displayQuote();
+            showElement('wisdom');
+        }
+
+        function displayQuote() {
+            const quote = holyQuotes[currentQuoteIndex];
+            document.getElementById('quoteText').innerHTML = 
+                `<div class="english-quote">"${quote.text}"</div>
+                 <div class="hindi-quote">"${quote.hindi}"</div>`;
+            document.getElementById('quoteSource').innerHTML = 
+                `<div class="english-source">- ${quote.source}</div>
+                 <div class="hindi-source">- ${quote.sourceHindi}</div>`;
+        }
+
+        function nextQuote() {
+            currentQuoteIndex = (currentQuoteIndex + 1) % holyQuotes.length;
+            displayQuote();
+        }
+
+        function backToResult() {
+            document.getElementById('wisdom').classList.add('hidden');
+            showElement('result');
+        }
+
         function resetAll() {
-            // Hide everything except question 1
             document.getElementById('question2').classList.add('hidden');
             document.getElementById('result').classList.add('hidden');
-            
-            // Show question 1
+            document.getElementById('wisdom').classList.add('hidden');
             showElement('question1');
         }
     </script>
