@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Problem Solver</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1 class="main-title">Life Problem Solver</h1>
+        <p class="subtitle">concept by Pandey Adarsh</p>
+    </div>
+
+    <div class="container">
+        <!-- Question 1 -->
+        <div id="question1" class="glass-card fade-in">
+            <div class="question-text">Do You Have A Problem In Life?</div>
+            <div class="buttons-container">
+                <button class="choice-btn" onclick="showNext('yes', 1)">Yes</button>
+                <button class="choice-btn no-btn" onclick="showNext('no', 1)">No</button>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div id="question2" class="glass-card hidden">
+            <div class="question-text">Can You Do Something About It?</div>
+            <div class="buttons-container">
+                <button class="choice-btn" onclick="showNext('yes', 2)">Yes</button>
+                <button class="choice-btn no-btn" onclick="showNext('no', 2)">No</button>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div id="result" class="glass-card hidden">
+            <div class="result-text">Then Why Worry!</div>
+            <button class="reset-btn" onclick="resetAll()">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        function showNext(choice, questionNum) {
+            // Hide current element
+            const current = document.getElementById('question' + questionNum);
+            current.classList.add('hidden');
+            
+            if (questionNum === 1) {
+                if (choice === 'no') {
+                    // Show result
+                    showElement('result');
+                } else {
+                    // Show question 2
+                    showElement('question2');
+                }
+            } else {
+                // Both yes and no from question 2 show result
+                showElement('result');
+            }
+        }
+
+        function showElement(id) {
+            setTimeout(() => {
+                const element = document.getElementById(id);
+                element.classList.remove('hidden');
+                element.classList.add('fade-in');
+            }, 200);
+        }
+
+        function resetAll() {
+            // Hide everything except question 1
+            document.getElementById('question2').classList.add('hidden');
+            document.getElementById('result').classList.add('hidden');
+            
+            // Show question 1
+            showElement('question1');
+        }
+    </script>
+</body>
+</html>
