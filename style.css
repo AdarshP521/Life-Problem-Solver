@@ -21,17 +21,19 @@ body {
 }
 
 .main-title {
+        font-family:Georgia, 'Times New Roman', Times, serif;
     font-size: 3rem;
     font-weight: bold;
     color: white;
-    margin-bottom: 5px;
+margin-top: 5rem;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .subtitle {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.8);
-    font-style: italic;
+    font-size: 2rem;
+    color: rgba(0, 0, 0, 0.8);
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    margin: 2rem;
 }
 
 .container {
